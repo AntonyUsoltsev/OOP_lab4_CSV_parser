@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <tuple>
 
 struct Point {
     int x;
@@ -24,6 +25,8 @@ struct Point_t {
 // Шаблоны определяются на фазе компиляции
 int main() {
     Point_t<int> pt;
+    std::tuple<int,int> tp(2,3);
+    std::tuple<int, double, const char*> tup {42, 10.5, "hello"};
     std::cout << "Hello, World!" << std::endl;
     return 0;
 }
