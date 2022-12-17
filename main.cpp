@@ -4,18 +4,25 @@ int main() {
     try {
         std::ifstream file("test.csv");
         if (!file.is_open())
-            throw Exceptions("file isn't open", 2);
+            throw Exceptions("File isn't open", FILE_NOT_OPEN);
         CSV_parser<int, int, std::string> parser(file, 0);
-        for (std::tuple<int, int, std::string> rs: parser.tp_vect) {
+        for (const auto& rs: parser.tp_vect) {
             std::cout << rs;
             std::cout << std::endl;
         }
-
+        file.close();
+        return 0;
     }
-    catch (const std::string &ex) {
-        std::cerr << ex;
+    catch (Exceptions &ex) {
+        std::cout.flush();
+        std::cerr << "\nERROR: " << ex.what_err();
+        return ex.ret_code();
     }
-    return 0;
+    catch(std::exception &ex){
+        std::cout.flush();
+        std::cerr << "\nERROR: " << ex.what();
+        return 1;
+    }
 }
 
 

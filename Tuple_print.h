@@ -21,7 +21,7 @@ std::ostream &print_tuple(std::basic_ostream<Ch, Tr> &os, const Tuple &tp, str_i
 
 template<class Tuple, typename Ch, typename Tr, std::size_t Pos>
 std::ostream &print_tuple(std::basic_ostream<Ch, Tr> &os, const Tuple &tp, str_int<Pos>) {
-    std::cout << std::get<std::tuple_size<Tuple>::value - Pos>(tp) << ",";
+    std::cout << std::get<std::tuple_size<Tuple>::value - Pos>(tp) << ", ";
     return print_tuple(os, tp, str_int<Pos - 1>());
 }
 

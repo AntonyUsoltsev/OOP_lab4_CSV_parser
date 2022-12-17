@@ -8,15 +8,8 @@
 #include<iostream>
 
 enum {
-    BAD_PROG_ARGS_KEY = 2,
-    MISSING_KEY = 3,
-    BAD_PROG_ARGS_EXTENSION = 4,
-    PROGRAM_STOPPED = 5,
-    FILE_NOT_OPEN = 6,
-    BAD_CONFIG_CONVERTER = 7,
-    BAD_CONFIG_CONV_ARGS = 8,
-    BAD_TIME = 9,
-    BAD_FILE_PARAMS = 10
+    FILE_NOT_OPEN = 2,
+    BAD_FILE = 3,
 };
 
 class Exceptions : std::exception {
