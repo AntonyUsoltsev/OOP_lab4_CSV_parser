@@ -3,4 +3,4 @@ project(lab4_csv_parser)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(lab4_csv_parser main.cpp)
+add_executable(lab4_csv_parser main.cpp CSV_parser.cpp CSV_parser.h Exceptions.cpp Exceptions.h)
