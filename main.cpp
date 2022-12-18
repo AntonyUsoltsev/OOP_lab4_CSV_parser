@@ -1,11 +1,11 @@
 #include "CSV_parser.h"
 
-//экранирование только для строк!
+// Work with non-empty data
 
 int main(int argc, char**argv) {
     try {
         if (argc < 3)
-            throw Exceptions("Too few args in command line", FILE_NOT_OPEN);
+            throw Exceptions("Too few args in command line", BAD_PROG_ARGS);
 
         std::ifstream file("test.csv");
         if (!file.is_open())

@@ -9,9 +9,8 @@
 
 enum {
     FILE_NOT_OPEN = 2,
-    BAD_FILE = 3,
-    BAD_FILE_DATA =4
-
+    BAD_PROG_ARGS = 3,
+    BAD_FILE_DATA = 4
 };
 
 class Exceptions : std::exception {
@@ -25,7 +24,7 @@ public:
         return this->reason;
     }
 
-    int ret_code() const {
+   int ret_code() const {
         return this->return_code;
     }
 };
