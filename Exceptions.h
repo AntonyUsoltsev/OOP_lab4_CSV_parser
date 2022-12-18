@@ -10,6 +10,8 @@
 enum {
     FILE_NOT_OPEN = 2,
     BAD_FILE = 3,
+    BAD_FILE_DATA =4
+
 };
 
 class Exceptions : std::exception {
