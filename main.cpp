@@ -9,9 +9,9 @@ int main(int argc, char **argv) {
         std::ifstream file("test.csv");
         if (!file.is_open())
             throw Exceptions("File isn't open", FILE_NOT_OPEN);
-       // CSV_parser<std::string, int, std::string, std::string,std::string, float>
-        CSV_parser<char , std::string, int> parser(argv, file, 7);
-        for (CSV_parser<char, std::string, int> &it : parser) {
+
+        CSV_parser<std::string, int, std::string, std::string,std::string, float> parser(argv, file, 0);
+        for (CSV_parser<std::string, int, std::string, std::string,std::string, float>&it : parser) {
             //std::get<5>(it.res_tp) -=100;
             std::cout << it;
             std::cout << std::endl;

@@ -63,12 +63,13 @@ public:
     char shield;                 // Shielding value.
     int line_num;                // Number of current line.
     std::ifstream file;          // Current csv file.
-    std::string cur_line;        // Current line.
+    std::string cur_line;        // Current line .
     std::tuple<Args ...> res_tp; // Result tuple.
+
 
     CSV_iterator<CSV_parser> begin() {
         CSV_parser<Args...> *csv_parser = this;
-        return iterator(csv_parser);
+        return CSV_iterator<CSV_parser> (csv_parser);
     }
 
     CSV_iterator<CSV_parser> end() {
@@ -136,9 +137,9 @@ public:
     template<typename Head>
     Head str_to_head(int cur_pos, int comma_pos, const std::string &data, Head &head) {
         std::istringstream ist(data);
-        std::cout << data.length();
+      //  std::cout << data.length();
         ist >> head;
-        std::cout << head;
+        //std::cout << head;
         if (!ist.eof())
             throw Exceptions(bad_data(cur_pos, comma_pos), BAD_FILE_DATA);
         return head;
