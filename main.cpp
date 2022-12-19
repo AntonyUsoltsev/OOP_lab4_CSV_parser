@@ -3,6 +3,8 @@
 
 int main(int argc, char **argv) {
     try {
+
+
         if (argc < 3)
             throw Exceptions("Too few args in command line", BAD_PROG_ARGS);
 
