@@ -8,6 +8,7 @@
 #include <iostream>
 #include <tuple>
 
+#include "CSV_parser.h"
 //template int
 template<std::size_t>
 struct str_int {
@@ -31,5 +32,10 @@ auto operator<<(std::basic_ostream<Ch, Tr> &os, std::tuple<Args...> const &tp) {
     print_tuple(os, tp, str_int<sizeof...(Args)>());
     os << ")";
     return;
+}
+
+template<typename ...Args, typename Ch, typename Tr>
+auto operator<<(std::basic_ostream<Ch, Tr> &os, const CSV_parser<Args...>& parser) {
+    return os << parser.res_tp;
 }
 #endif //LAB4_CSV_PARSER_TUPLE_PRINT_H
