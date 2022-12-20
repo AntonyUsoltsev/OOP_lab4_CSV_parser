@@ -1,0 +1,6 @@
+(Para:, 1, Subject: LOP, Prepod: Chimit, Raiting:, 5)
+(Para:, 2, Subject: OOP, Prepod: Maria, Raiting:, 10)
+(Para:, 3, Subject: Window, Prepod: -, Raiting:, 100)
+(Para:, 4, Subject: English, Prepod: Charitnseva, Raiting:, 1)
+(Para:, 5, Subject: Window, Prepod: -, Raiting:, 100)
+(Para:, 6, Subject: Diskretka, Prepod: Aleksey Perezhogin, Danilko Vitaly, Raiting:, 7)
