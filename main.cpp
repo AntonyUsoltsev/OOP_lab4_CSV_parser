@@ -1,8 +1,9 @@
 #include "Tuple_print.h"
+#include <ctime>
 // Work with non-empty data
 
 int main(int argc, char **argv) {
-
+    clock_t beg = clock();
     try {
         if (argc < 3)
             throw Exceptions("Too few args in command line", BAD_PROG_ARGS);
@@ -11,13 +12,16 @@ int main(int argc, char **argv) {
         if (!file.is_open())
             throw Exceptions("File isn't open", FILE_NOT_OPEN);
 
-        CSV_parser<std::string, int, std::string, std::string,std::string, float> parser(argv, file, 0);
-        for (CSV_parser<std::string, int, std::string, std::string,std::string, float>&it : parser) {
-            //std::get<5>(it.res_tp) -=100;
-            std::cout << it;
-            std::cout << std::endl;
-        }
+        std::ofstream file_out("out.txt");
 
+        CSV_parser<std::string, int, std::string, std::string,std::string, std::string> parser(argv, file, 0);
+        for (CSV_parser<std::string, int, std::string, std::string,std::string, std::string>&it : parser) {
+            //std::get<5>(it.res_tp) -=100;
+            file_out << it;
+            file_out << std::endl;
+        }
+        clock_t end = clock();
+        std::cout << end-beg;
         return 0;
     }
     catch (Exceptions &ex) {
@@ -32,4 +36,4 @@ int main(int argc, char **argv) {
     }
 }
 
-
+//int, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string

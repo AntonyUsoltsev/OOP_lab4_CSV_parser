@@ -15,13 +15,13 @@ struct str_int {
 
 template<class Tuple, typename Ch, typename Tr>
 std::ostream &print_tuple(std::basic_ostream<Ch, Tr> &os, const Tuple &tp, str_int<1>) {
-    std::cout << std::get<std::tuple_size<Tuple>::value - 1>(tp);
+    os << std::get<std::tuple_size<Tuple>::value - 1>(tp);
     return os;
 }
 
 template<class Tuple, typename Ch, typename Tr, std::size_t Pos>
 std::ostream &print_tuple(std::basic_ostream<Ch, Tr> &os, const Tuple &tp, str_int<Pos>) {
-    std::cout << std::get<std::tuple_size<Tuple>::value - Pos>(tp) << ", ";
+    os << std::get<std::tuple_size<Tuple>::value - Pos>(tp) << ", ";
     return print_tuple(os, tp, str_int<Pos - 1>());
 }
 
@@ -34,8 +34,8 @@ auto operator<<(std::basic_ostream<Ch, Tr> &os, std::tuple<Args...> const &tp) {
 }
 
 template<typename ...Args, typename Ch, typename Tr>
-auto operator<<(std::basic_ostream<Ch, Tr> &os, const CSV_parser<Args...> &parser) {
-    return os << parser.res_tp;
+auto operator<<(std::basic_ostream<Ch, Tr> &os, CSV_parser<Args...> &parser) {
+    return os << parser.get_tuple();
 }
 
 #endif //LAB4_CSV_PARSER_TUPLE_PRINT_H

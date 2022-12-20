@@ -54,10 +54,8 @@ private:
         CSV_iterator(Iterator *iter) : value(iter) {};
 
         CSV_iterator(const CSV_iterator &it) : value(it.value) {}
-    };
+    };    // Iterator class.
 
-
-public:
     char separator;              // Data separator value.
     char end_line;               // End of line value.
     char shield;                 // Shielding value.
@@ -65,16 +63,6 @@ public:
     std::ifstream file;          // Current csv file.
     std::string cur_line;        // Current line .
     std::tuple<Args ...> res_tp; // Result tuple.
-
-
-    CSV_iterator<CSV_parser> begin() {
-        CSV_parser<Args...> *csv_parser = this;
-        return CSV_iterator<CSV_parser> (csv_parser);
-    }
-
-    CSV_iterator<CSV_parser> end() {
-        return nullptr;
-    }
 
     // Some kostyl :)
     void prog_args(char **argv) {
@@ -88,24 +76,6 @@ public:
                 shield = '"';
         } else
             shield = '"';
-    }
-
-    CSV_parser() = default;
-
-    // Parse CSV to tuples.s
-    CSV_parser(char **argv, std::basic_ios<char> &fin, int skip) {
-        file.basic_ios<char>::rdbuf(fin.rdbuf());
-        prog_args(argv);
-
-        std::string data;
-        for (int i = 0; i < skip; i++)
-            if (!std::getline(file, cur_line, end_line))
-                throw Exceptions("To few strings to skip", BAD_FILE_DATA);
-
-        line_num = skip + 1;
-        std::getline(file, cur_line, end_line);
-        str_to_tuple<Args...>(0, str_pos<0>());
-        line_num++;
     }
 
     // Convert string to required tuple.
@@ -125,7 +95,7 @@ public:
 
             std::get<Pos>(res_tp) = head;
 
-            cur_pos = comma_pos + 1;
+            cur_pos = (comma_pos + 1) % (cur_line.size() + 1);
             str_to_tuple<Params...>(cur_pos, str_pos<Pos + 1>());
         }
         catch (const std::exception &ex) {
@@ -133,27 +103,35 @@ public:
         }
     }
 
-    // Convert substring to Head elem.
+    // Convert substring to Head elem, which type is Head.
     template<typename Head>
-    Head str_to_head(int cur_pos, int comma_pos, const std::string &data, Head &head) {
+    void str_to_head(int cur_pos, int comma_pos, const std::string &data, Head &head) {
         std::istringstream ist(data);
-      //  std::cout << data.length();
         ist >> head;
-        //std::cout << head;
         if (!ist.eof())
-            throw Exceptions(bad_data(cur_pos, comma_pos), BAD_FILE_DATA);
-        return head;
+            throw Exceptions(bad_data(cur_pos, ist), BAD_FILE_DATA);
     }
 
-    // Convert substring to Head elem.
-    std::string str_to_head(int cur_pos, int comma_pos, const std::string &data, std::string &head) {
+    // Convert substring to Head elem, which type is std::string.
+    void str_to_head(int cur_pos, int comma_pos, const std::string &data, std::string &head) {
         head = data;
-        return head;
+    }
+
+    // Convert substring to Head elem, which type is char.
+    void str_to_head(int cur_pos, int comma_pos, const std::string &data, char &head) {
+        if (data.size() != 1)
+            throw Exceptions(bad_data(cur_pos), BAD_FILE_DATA);
+        head = static_cast<char>(data[0]);
     }
 
     // Return a substring.
     std::string get_substr(char sep, int cur_pos, int &comma_pos) {
         comma_pos = static_cast<int>(cur_line.find(sep, cur_pos));
+        if (comma_pos == std::string::npos && sep == shield) {                   // If open-shield symbol don't have close.
+            std::string elem = get_substr(separator, cur_pos - 1, comma_pos);
+            comma_pos--;
+            return elem;
+        }
         std::string elem = cur_line.substr(cur_pos, comma_pos - cur_pos);
         if (elem.empty())
             throw Exceptions(empty_data(cur_pos), BAD_FILE_DATA);
@@ -161,9 +139,13 @@ public:
     }
 
     // Return position of bad interval.
-    std::string bad_data(int a, int b) {
-        return "Bad data in " + std::to_string(line_num) + " row, in " + std::to_string(a + 1) + '-' +
-               std::to_string(b % cur_line.size()) + " columns";
+    std::string bad_data(int a) {
+        return "Bad data in " + std::to_string(line_num) + " row, in " + std::to_string(a%cur_line.size()) + " column";
+    }
+
+    // Return position of bad interval.
+    std::string bad_data(int a, std::istringstream &ist) {
+        return "Bad data in " + std::to_string(line_num) + " row, in " + std::to_string(a + ist.tellg() + 1) + " column";
     }
 
     // Return position of empty interval.
@@ -177,6 +159,39 @@ public:
         if (cur_pos != 0) {
             throw Exceptions("Wrong length of " + std::to_string(line_num) + " string ", BAD_FILE_DATA);
         }
+    }
+
+public:
+
+    std::tuple<Args ...> get_tuple(){
+        return res_tp;
+    }
+
+    CSV_iterator<CSV_parser> begin() {
+        CSV_parser<Args...> *csv_parser = this;
+        return CSV_iterator<CSV_parser>(csv_parser);
+    }
+
+    CSV_iterator<CSV_parser> end() {
+        return nullptr;
+    }
+
+    CSV_parser() = default;
+
+    // Initial fields, skip lines and convert first string to tuple.
+    CSV_parser(char **argv, std::basic_ios<char> &fin, int skip) {
+        file.basic_ios<char>::rdbuf(fin.rdbuf());
+        prog_args(argv);
+
+        std::string data;
+        for (int i = 0; i < skip; i++)
+            if (!std::getline(file, cur_line, end_line))
+                throw Exceptions("To few strings to skip", BAD_FILE_DATA);
+
+        line_num = skip + 1;
+        std::getline(file, cur_line, end_line);
+        str_to_tuple<Args...>(0, str_pos<0>());
+        line_num++;
     }
 
     ~CSV_parser() = default;
