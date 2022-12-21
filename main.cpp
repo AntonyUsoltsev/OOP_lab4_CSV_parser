@@ -1,6 +1,7 @@
 #include "Tuple_print.h"
 #include <ctime>
-// Work with non-empty data
+
+// Empty data will cause empty-error
 
 int main(int argc, char **argv) {
     clock_t beg = clock();
@@ -14,14 +15,14 @@ int main(int argc, char **argv) {
 
         std::ofstream file_out("out.txt");
 
-        CSV_parser<std::string, int, std::string, std::string,std::string, std::string> parser(argv, file, 0);
-        for (CSV_parser<std::string, int, std::string, std::string,std::string, std::string>&it : parser) {
+        CSV_parser<std::string, int, std::string, std::string, std::string, int> parser(argv, file, 0);
+        for (CSV_parser<std::string, int, std::string, std::string, std::string, int> &it: parser) {
             //std::get<5>(it.res_tp) -=100;
-            file_out << it;
-            file_out << std::endl;
+            std::cout << it;
+            std::cout << std::endl;
         }
         clock_t end = clock();
-        std::cout << end-beg;
+        //std::cout << end - beg;
         return 0;
     }
     catch (Exceptions &ex) {

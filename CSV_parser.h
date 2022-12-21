@@ -99,7 +99,15 @@ private:
             str_to_tuple<Params...>(cur_pos, str_pos<Pos + 1>());
         }
         catch (const std::exception &ex) {
-            throw Exceptions("Wrong length of " + std::to_string(line_num) + " string (too short)", BAD_FILE_DATA);
+            throw Exceptions("Wrong length of " + std::to_string(line_num) + " string (too short)", WRONG_LINE_LEN);
+        }
+    }
+
+    // Recursion bottom.
+    template<typename ...Params>
+    void str_to_tuple(int cur_pos, str_pos<sizeof...(Args)>) {
+        if (cur_pos != 0) {
+            throw Exceptions("Wrong length of " + std::to_string(line_num) + " string ", WRONG_LINE_LEN);
         }
     }
 
@@ -140,12 +148,14 @@ private:
 
     // Return position of bad interval.
     std::string bad_data(int a) {
-        return "Bad data in " + std::to_string(line_num) + " row, in " + std::to_string(a%cur_line.size()) + " column";
+        return "Bad data in " + std::to_string(line_num) + " row, in " + std::to_string(a % cur_line.size()) +
+               " column";
     }
 
     // Return position of bad interval.
     std::string bad_data(int a, std::istringstream &ist) {
-        return "Bad data in " + std::to_string(line_num) + " row, in " + std::to_string(a + ist.tellg() + 1) + " column";
+        return "Bad data in " + std::to_string(line_num) + " row, in " + std::to_string(a + ist.tellg() + 1) +
+               " column";
     }
 
     // Return position of empty interval.
@@ -153,17 +163,9 @@ private:
         return "Empty data in " + std::to_string(line_num) + " row, in " + std::to_string(a) + " column";
     }
 
-    // Recursion bottom.
-    template<typename ...Params>
-    void str_to_tuple(int cur_pos, str_pos<sizeof...(Args)>) {
-        if (cur_pos != 0) {
-            throw Exceptions("Wrong length of " + std::to_string(line_num) + " string ", BAD_FILE_DATA);
-        }
-    }
-
 public:
 
-    std::tuple<Args ...> get_tuple(){
+    std::tuple<Args ...> get_tuple() {
         return res_tp;
     }
 
@@ -181,12 +183,13 @@ public:
     // Initial fields, skip lines and convert first string to tuple.
     CSV_parser(char **argv, std::basic_ios<char> &fin, int skip) {
         file.basic_ios<char>::rdbuf(fin.rdbuf());
-        prog_args(argv);
+        prog_args(argv);                         // Set fields from command line
 
-        std::string data;
+       // std::string data;
+
         for (int i = 0; i < skip; i++)
             if (!std::getline(file, cur_line, end_line))
-                throw Exceptions("To few strings to skip", BAD_FILE_DATA);
+                throw Exceptions("To few strings to skip", WRONG_NUM_LINES);
 
         line_num = skip + 1;
         std::getline(file, cur_line, end_line);
